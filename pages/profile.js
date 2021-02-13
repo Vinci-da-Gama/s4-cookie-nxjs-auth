@@ -1,22 +1,38 @@
+import { useState, useEffect } from "react";
+// import PropTypes from "prop-types";
+
 import Layout from "../components/Layout";
 import { authInitialProps, getUserProfile } from "../lib/auth";
 
-export default class Profile extends React.Component {
-  state = {
-    user: "Loading profile..."
-  };
+const initUserProfile = {
+  init: "waiting profile...",
+};
 
-  componentDidMount() {
-    getUserProfile().then(user => this.setState({ user }));
-  }
+const Profile = (props) => {
+  console.log("12 -- props: ", props);
+  const [userProfile, setUserProfile] = useState(initUserProfile);
 
-  render() {
-    return (
-      <Layout title="Profile" {...this.props}>
-        <pre>{JSON.stringify(this.state.user, null, 2)}</pre>
-      </Layout>
-    );
-  }
-}
+  useEffect(() => {
+    const getTargetUserProfile = async () => {
+      try {
+        setUserProfile(await getUserProfile());
+      } catch (error) {
+        console.warn("20 -- error: ", error.message);
+      }
+    };
+    getTargetUserProfile();
+    // return () => {}
+  }, []);
+
+  return (
+    <Layout title="Profile" {...props}>
+      <pre>{JSON.stringify(userProfile, null, 2)}</pre>
+    </Layout>
+  );
+};
 
 Profile.getInitialProps = authInitialProps(true);
+
+/* Profile.propTypes = {}; */
+
+export default Profile;

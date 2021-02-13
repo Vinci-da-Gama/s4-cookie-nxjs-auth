@@ -17,12 +17,12 @@ const Layout = ({ auth, children, title }) => {
 
           {user.email ? (
             // Auth Navigation
-            <React.Fragment>
+            <>
               <Link href="/profile">
                 <a>Profile</a>
               </Link>
               <button onClick={logoutUser}>Logout</button>
-            </React.Fragment>
+            </>
           ) : (
             // UnAuth Navigation
             <Link href="/login">

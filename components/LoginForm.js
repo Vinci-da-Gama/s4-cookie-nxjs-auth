@@ -1,67 +1,83 @@
+import { useState } from "react";
+// import PropTypes from "prop-types";
 import Router from "next/router";
 import { loginUser } from "../lib/auth";
 
-class LoginForm extends React.Component {
-  state = {
-    email: "Lucio_Hettinger@annie.ca",
-    password: "demarco.info",
-    isLoading: false,
-    error: ""
+const initLoginData = {
+  email: "Lucio_Hettinger@annie.ca",
+  password: "demarco.info",
+  isLoading: false,
+  error: "",
+};
+
+const LoginForm = () => {
+  const [loginFormData, setLoginFormData] = useState(initLoginData);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setLoginFormData({
+      ...loginFormData,
+      [name]: value,
+    });
   };
 
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleSubmit = event => {
-    const { email, password } = this.state;
-
+  const handleSubmit = (event) => {
     event.preventDefault();
-    this.setState({ error: "", isLoading: true });
-    loginUser({ email, password })
+    setLoginFormData({
+      ...loginFormData,
+      error: "",
+      isLoading: true,
+    });
+
+    loginUser({
+      email: loginFormData.email,
+      password: loginFormData.password,
+    })
       .then(() => {
         Router.push("/profile");
-        this.setState({ isLoading: false });
+        setLoginFormData(initLoginData);
       })
-      .catch(this.setError);
+      .catch(setError);
   };
 
-  setError = err => {
+  const setError = (err) => {
     console.error(err);
     const error = (err.response && err.response.data) || err.message;
-    this.setState({ error, isLoading: false });
+    setLoginFormData({
+      ...loginFormData,
+      error,
+      isLoading: false,
+    });
   };
 
-  render() {
-    const { email, password, error, isLoading } = this.state;
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <input
+          type="email"
+          placeholder="email"
+          name="email"
+          value={loginFormData.email || ""}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <input
+          type="password"
+          name="password"
+          placeholder="password"
+          value={loginFormData.password || ""}
+          onChange={handleChange}
+        />
+      </div>
+      <button type="submit" disabled={loginFormData.isLoading}>
+        {loginFormData.isLoading ? "Sending" : "Submit"}
+      </button>
+      {loginFormData.error && <div>{loginFormData.error}</div>}
+    </form>
+  );
+};
 
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <div>
-          <input
-            type="email"
-            placeholder="email"
-            name="email"
-            value={email}
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            value={password}
-            onChange={this.handleChange}
-          />
-        </div>
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? "Sending" : "Submit"}
-        </button>
-        {error && <div>{error}</div>}
-      </form>
-    );
-  }
-}
+/* LoginForm.propTypes = {} */
 
 export default LoginForm;
