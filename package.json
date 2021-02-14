@@ -5,7 +5,7 @@
     "dev": "PORT=5000 nodemon server.js",
     "build": "next build",
     "start": "NODE_ENV=production PORT=5000 node server.js",
-    "demo": "next build && NODE_ENV=production PORT=5000 node server.js"
+    "demo": "next build && NODE_ENV=production PORT=5000 nodemon server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

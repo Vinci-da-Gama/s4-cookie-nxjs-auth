@@ -1,4 +1,6 @@
-import Document, { Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+// import dompurify from "dompurify";
+
 import { getServerSideToken, getUserScript } from "../lib/auth";
 
 export default class MyDocument extends Document {
@@ -13,14 +15,18 @@ export default class MyDocument extends Document {
     const { user = {} } = this.props;
 
     return (
-      <html>
+      <Html>
         <Head />
         <body>
           <Main />
-          <script dangerouslySetInnerHTML={{ __html: getUserScript(user) }} />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: getUserScript(user),
+            }}
+          />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }
